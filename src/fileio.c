@@ -391,9 +391,9 @@ static int App_LoadBitmapFile(APP_STATE* app, LPCTSTR path) {
         MessageBox(app->window, TEXT("The bitmap header is invalid."), APP_TITLE, MB_OK | MB_ICONERROR);
         return 0;
     }
-    if (info_size <= sizeof(info_size)) {
+    if (info_size != 12u && info_size < 40u) {
         CloseHandle(file);
-        MessageBox(app->window, TEXT("The bitmap header is too small."), APP_TITLE, MB_OK | MB_ICONERROR);
+        MessageBox(app->window, TEXT("This bitmap header is not supported."), APP_TITLE, MB_OK | MB_ICONERROR);
         return 0;
     }
 

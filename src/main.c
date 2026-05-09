@@ -65,6 +65,12 @@ static LRESULT CALLBACK App_WndProc(HWND window, UINT message, WPARAM w_param, L
             }
         }
         break;
+    case WM_KEYDOWN:
+        if (w_param == VK_ESCAPE && app->text_edit_active) {
+            App_CancelTextEdit(app);
+            return 0;
+        }
+        break;
     case WM_SYSKEYDOWN:
         if (w_param == VK_F4) {
             App_HandleCommand(app, ID_FILE_EXIT);
@@ -201,7 +207,10 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous_instance, LPWSTR comma
     UpdateWindow(window);
 
     while (GetMessage(&message, NULL, 0, 0)) {
-        if (!accel || !TranslateAccelerator(window, accel, &message)) {
+        if (accel && g_app.text_edit_active && GetFocus() == g_app.text_edit_window) {
+            TranslateMessage(&message);
+            DispatchMessage(&message);
+        } else if (!accel || !TranslateAccelerator(window, accel, &message)) {
             TranslateMessage(&message);
             DispatchMessage(&message);
         }
