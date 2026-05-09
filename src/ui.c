@@ -209,9 +209,7 @@ static void App_DrawPalette(HDC hdc, APP_STATE* app) {
     App_DrawBitmap(hdc, app->arrow_bitmap, app->palette_rect.left + 56, app->palette_rect.top + 34);
 
     for (index = 0; index < PALETTE_COLOR_COUNT; ++index) {
-        brush = CreateSolidBrush(g_palette_colors[index]);
-        FillRect(hdc, &app->palette_cells[index], brush);
-        DeleteObject(brush);
+        FillRect(hdc, &app->palette_cells[index], app->palette_brushes[index]);
         App_DrawBevel(hdc, &app->palette_cells[index], RGB(255, 255, 255), RGB(96, 96, 96));
     }
 }

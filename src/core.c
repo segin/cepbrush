@@ -444,6 +444,9 @@ void App_LoadResources(APP_STATE* app) {
     for (index = 0; index < TOOL_COUNT; ++index) {
         app->tool_cursors[index] = LoadCursor(app->instance, MAKEINTRESOURCE(g_tools[index].cursor_id));
     }
+    for (index = 0; index < PALETTE_COLOR_COUNT; ++index) {
+        app->palette_brushes[index] = CreateSolidBrush(g_palette_colors[index]);
+    }
     App_InitTextState(app);
 }
 
@@ -476,6 +479,12 @@ void App_DestroyResources(APP_STATE* app) {
     app->app_icon_big = NULL;
     for (index = 0; index < TOOL_COUNT; ++index) {
         app->tool_cursors[index] = NULL;
+    }
+    for (index = 0; index < PALETTE_COLOR_COUNT; ++index) {
+        if (app->palette_brushes[index]) {
+            DeleteObject(app->palette_brushes[index]);
+            app->palette_brushes[index] = NULL;
+        }
     }
     App_DestroyTextState(app);
 }

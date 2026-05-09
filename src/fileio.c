@@ -345,6 +345,7 @@ static int App_LoadBitmapFile(APP_STATE* app, LPCTSTR path) {
     BYTE file_header[14];
     BYTE* info_bytes;
     DWORD file_size;
+    BYTE info_size_bytes[4];
     DWORD info_size;
     DWORD current_offset;
     DWORD bitfields[3];
@@ -379,7 +380,8 @@ static int App_LoadBitmapFile(APP_STATE* app, LPCTSTR path) {
     memset(bitfields, 0, sizeof(bitfields));
     memset(palette, 0, sizeof(palette));
     success = App_ReadFileChecked(file, file_header, sizeof(file_header))
-        && App_ReadFileChecked(file, &info_size, sizeof(info_size));
+        && App_ReadFileChecked(file, info_size_bytes, sizeof(info_size_bytes));
+    info_size = App_ReadLe32(info_size_bytes);
     if (!success || App_ReadLe16(file_header) != 0x4D42 || info_size < 12u) {
         CloseHandle(file);
         MessageBox(app->window, TEXT("This bitmap header is not supported."), APP_TITLE, MB_OK | MB_ICONERROR);

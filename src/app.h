@@ -116,6 +116,7 @@ typedef struct APP_STATE_TAG {
     HBITMAP toolbox_bw_bitmap;
     HBITMAP arrow_bitmap;
     HCURSOR tool_cursors[TOOL_COUNT];
+    HBRUSH palette_brushes[PALETTE_COLOR_COUNT];
     HICON app_icon_small;
     HICON app_icon_big;
     HBITMAP canvas_bitmap;
