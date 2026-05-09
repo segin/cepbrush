@@ -25,7 +25,10 @@ void App_DestroyCanvas(APP_STATE* app) {
 }
 
 int App_CreateCanvas(APP_STATE* app, int width, int height) {
-    BITMAPINFO bitmap_info;
+    struct {
+        BITMAPINFOHEADER bmiHeader;
+        DWORD masks[3];
+    } bitmap_info;
     HBITMAP bitmap;
     HBITMAP undo_bitmap;
     HDC canvas_dc;
@@ -41,7 +44,10 @@ int App_CreateCanvas(APP_STATE* app, int width, int height) {
     bitmap_info.bmiHeader.biHeight = -height;
     bitmap_info.bmiHeader.biPlanes = 1;
     bitmap_info.bmiHeader.biBitCount = 32;
-    bitmap_info.bmiHeader.biCompression = BI_RGB;
+    bitmap_info.bmiHeader.biCompression = BI_BITFIELDS;
+    bitmap_info.masks[0] = 0x000000FFu;
+    bitmap_info.masks[1] = 0x0000FF00u;
+    bitmap_info.masks[2] = 0x00FF0000u;
 
     canvas_dc = CreateCompatibleDC(NULL);
     undo_dc = CreateCompatibleDC(NULL);
@@ -55,8 +61,8 @@ int App_CreateCanvas(APP_STATE* app, int width, int height) {
         return 0;
     }
 
-    bitmap = CreateDIBSection(canvas_dc, &bitmap_info, DIB_RGB_COLORS, &canvas_bits, NULL, 0);
-    undo_bitmap = CreateDIBSection(undo_dc, &bitmap_info, DIB_RGB_COLORS, &undo_bits, NULL, 0);
+    bitmap = CreateDIBSection(canvas_dc, (BITMAPINFO*)&bitmap_info, DIB_RGB_COLORS, &canvas_bits, NULL, 0);
+    undo_bitmap = CreateDIBSection(undo_dc, (BITMAPINFO*)&bitmap_info, DIB_RGB_COLORS, &undo_bits, NULL, 0);
     if (!bitmap || !undo_bitmap || !canvas_bits || !undo_bits) {
         if (bitmap) {
             DeleteObject(bitmap);
