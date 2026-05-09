@@ -3,6 +3,7 @@
 
 #define IDI_APP 101
 #define IDR_MAIN_MENU 102
+#define IDR_ACCELERATORS 103
 
 #define ID_FILE_NEW 40001
 #define ID_FILE_OPEN 40002

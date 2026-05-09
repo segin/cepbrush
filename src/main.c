@@ -155,6 +155,7 @@ static LRESULT CALLBACK App_WndProc(HWND window, UINT message, WPARAM w_param, L
 int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous_instance, LPWSTR command_line, int show_command) {
     WNDCLASS window_class;
     HWND window;
+    HACCEL accel;
     MSG message;
 
     (void)previous_instance;
@@ -194,12 +195,20 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous_instance, LPWSTR comma
         return 1;
     }
 
+    accel = LoadAccelerators(instance, MAKEINTRESOURCE(IDR_ACCELERATORS));
+
     ShowWindow(window, SW_SHOWMAXIMIZED);
     UpdateWindow(window);
 
     while (GetMessage(&message, NULL, 0, 0)) {
-        TranslateMessage(&message);
-        DispatchMessage(&message);
+        if (!accel || !TranslateAccelerator(window, accel, &message)) {
+            TranslateMessage(&message);
+            DispatchMessage(&message);
+        }
+    }
+
+    if (accel) {
+        DestroyAcceleratorTable(accel);
     }
 
     return (int)message.wParam;
